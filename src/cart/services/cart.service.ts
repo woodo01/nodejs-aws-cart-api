@@ -1,8 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 
-import { v4 } from 'uuid';
+import { Cart, CartStatuses } from '../models';
 
-import { Cart } from '../models';
+function getDate(date = new Date()) {
+  date.setHours(0);
+  date.setMinutes(0);
+  date.setMinutes(0);
+  date.setMilliseconds(0);
+
+  return (date.getTime() / 1000).toString();
+}
 
 @Injectable()
 export class CartService {
@@ -12,14 +20,17 @@ export class CartService {
     return this.userCarts[userId];
   }
 
-  createByUserId(userId: string) {
-    const id = v4();
+  createByUserId(user_id: string): Cart {
     const userCart = {
-      id,
+      id: randomUUID(),
+      user_id,
+      created_at: getDate(),
+      updated_at: getDate(),
+      status: CartStatuses.OPEN,
       items: [],
     };
 
-    this.userCarts[userId] = userCart;
+    this.userCarts[user_id] = userCart;
 
     return userCart;
   }

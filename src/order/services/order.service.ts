@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { v4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 import { Order } from '../models';
 
@@ -12,7 +12,7 @@ export class OrderService {
   }
 
   create(data: any) {
-    const id = v4();
+    const id = randomUUID();
     const order = {
       ...data,
       id,
