@@ -10,7 +10,7 @@ describe('CartController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CartController],
       providers: [CartService],
-      imports: [OrderModule]
+      imports: [OrderModule],
     }).compile();
 
     controller = module.get<CartController>(CartController);
