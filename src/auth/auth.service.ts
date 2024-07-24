@@ -3,6 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/services/users.service';
 import { User } from '../users/models';
 // import { contentSecurityPolicy } from 'helmet';
+type TokenResponse = {
+  token_type: string;
+  access_token: string;
+};
 
 @Injectable()
 export class AuthService {
@@ -11,7 +15,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  validateUser(name: string, password: string): any {
+  validateUser(name: string, password: string): User {
     const user = this.usersService.findOne(name);
 
     if (user) {
@@ -21,7 +25,7 @@ export class AuthService {
     return this.usersService.createOne({ name, password });
   }
 
-  login(user: User, type) {
+  login(user: User, type: 'jwt' | 'basic' | 'default'): TokenResponse {
     const LOGIN_MAP = {
       jwt: this.loginJWT,
       basic: this.loginBasic,

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-
 import { Cart, CartStatuses } from '../models';
+import { PutCartPayload } from '../cart.controller';
 
 function getDate(date = new Date()) {
   date.setHours(0);
@@ -45,18 +45,22 @@ export class CartService {
     return this.createByUserId(userId);
   }
 
-  updateByUserId(userId: string, { items }: Cart): Cart {
-    const { id, ...rest } = this.findOrCreateByUserId(userId);
+  updateByUserId(userId: string, payload: PutCartPayload): Cart {
+    const userCart = this.findOrCreateByUserId(userId);
 
-    const updatedCart = {
-      id,
-      ...rest,
-      items: [...items],
-    };
+    const index = userCart.items.findIndex(
+      ({ product }) => product.id === payload.product.id,
+    );
 
-    this.userCarts[userId] = { ...updatedCart };
+    if (index === -1) {
+      userCart.items.push(payload);
+    } else if (payload.count === 0) {
+      userCart.items.splice(index, 1);
+    } else {
+      userCart.items[index] = payload;
+    }
 
-    return { ...updatedCart };
+    return userCart;
   }
 
   removeByUserId(userId): void {

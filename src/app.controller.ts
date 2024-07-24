@@ -5,6 +5,8 @@ import {
   Post,
   UseGuards,
   HttpStatus,
+  Body,
+  HttpCode,
 } from '@nestjs/common';
 import {
   LocalAuthGuard,
@@ -12,22 +14,32 @@ import {
   // JwtAuthGuard,
   BasicAuthGuard,
 } from './auth';
+import { User } from './users';
+import { AppRequest } from './shared';
 
 @Controller()
 export class AppController {
   constructor(private authService: AuthService) {}
 
   @Get(['', 'ping'])
-  healthCheck(): any {
+  healthCheck() {
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
     };
   }
 
+  @Post('api/auth/register')
+  @HttpCode(HttpStatus.CREATED)
+  // TODO ADD validation
+  register(@Body() { name, password }: User) {
+    const user = this.authService.validateUser(name, password);
+    return this.authService.login(user, 'basic');
+  }
+
   @UseGuards(LocalAuthGuard)
   @Post('api/auth/login')
-  async login(@Request() req) {
+  async login(@Request() req: AppRequest) {
     const token = this.authService.login(req.user, 'basic');
 
     return {
