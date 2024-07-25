@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { Cart, CartStatuses } from '../models';
-import { PutCartPayload } from '../cart.controller';
+import { PutCartPayload } from 'src/order/type';
 
 function getDate(date = new Date()) {
   date.setHours(0);

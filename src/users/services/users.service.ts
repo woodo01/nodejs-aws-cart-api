@@ -7,23 +7,21 @@ export class UsersService {
   private readonly users: Record<string, User>;
 
   constructor() {
-    this.users = {
-      //   '4e180e57-19c5-47b9-87e7-0192d07ecd1e': {
-      //     id: '4e180e57-19c5-47b9-87e7-0192d07ecd1e',
-      //     name: 'test_user',
-      //     email: 'test@test.com',
-      //     password: 'secretpass',
-      //   },
-    };
+    this.users = {};
   }
 
-  findOne(userId: string): User {
-    return this.users[userId];
+  findOne(name: string): User {
+    for (const id in this.users) {
+      if (this.users[id].name === name) {
+        return this.users[id];
+      }
+    }
+    return;
   }
 
   createOne({ name, password }: User): User {
     const id = randomUUID();
-    const newUser = { id: name || id, name, password };
+    const newUser = { id, name, password };
 
     this.users[id] = newUser;
 

@@ -5,23 +5,19 @@ import {
   Put,
   Body,
   Req,
-  Post,
   UseGuards,
   HttpStatus,
   HttpCode,
   BadRequestException,
 } from '@nestjs/common';
 import { BasicAuthGuard } from '../auth';
-import { OrderService } from '../order';
+import { Order, OrderService } from '../order';
 import { AppRequest, getUserIdFromRequest } from '../shared';
 import { calculateCartTotal } from './models-rules';
 import { CartService } from './services';
 import { CartItem } from './models';
+import { CreateOrderDto, PutCartPayload } from 'src/order/type';
 
-export type PutCartPayload = {
-  product: { description: string; id: string; title: string; price: number };
-  count: number;
-};
 @Controller('api/profile/cart')
 export class CartController {
   constructor(
@@ -66,8 +62,8 @@ export class CartController {
 
   // @UseGuards(JwtAuthGuard)
   @UseGuards(BasicAuthGuard)
-  @Post('checkout')
-  checkout(@Req() req: AppRequest, @Body() body) {
+  @Put('order')
+  checkout(@Req() req: AppRequest, @Body() body: CreateOrderDto) {
     const userId = getUserIdFromRequest(req);
     const cart = this.cartService.findByUserId(userId);
 
@@ -78,10 +74,13 @@ export class CartController {
     const { id: cartId, items } = cart;
     const total = calculateCartTotal(items);
     const order = this.orderService.create({
-      ...body, // TODO: validate and pick only necessary data
       userId,
       cartId,
-      items,
+      items: items.map(({ product, count }) => ({
+        productId: product.id,
+        count,
+      })),
+      address: body.address,
       total,
     });
     this.cartService.removeByUserId(userId);
@@ -90,4 +89,12 @@ export class CartController {
       order,
     };
   }
+
+  @UseGuards(BasicAuthGuard)
+  @Get('order')
+  getOrder(): Order[] {
+    return this.orderService.getAll();
+  }
+
+  // TODO implement GET ORDER BY ID, DELETE ORDER, MANAGE ORDER
 }
