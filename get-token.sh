@@ -13,9 +13,9 @@ LOGIN_PAYLOAD="{\"username\":\"$GITHUB_ACCOUNT_LOGIN\",\"password\":\"$AUTH_PASS
 
 curl -s --header "Content-Type: application/json" \
   --request POST \
-  --data "$REGISTER_PAYLOAD"  "http://localhost:$APP_PORT/api/auth/register" | jq '.'
+  --data "$REGISTER_PAYLOAD"  "http://localhost:$APP_PORT/api/auth/register" > /dev/null
 
 
 curl -s --header "Content-Type: application/json" \
   --request POST \
-  --data "$LOGIN_PAYLOAD" "http://localhost:$APP_PORT/api/auth/login" | jq '.'
+  --data "$LOGIN_PAYLOAD" "http://localhost:$APP_PORT/api/auth/login"
