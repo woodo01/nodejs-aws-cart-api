@@ -1,6 +1,21 @@
 #!/bin/bash
 
-curl --header "Content-Type: application/json" \
+if [ ! -f .env ]; then
+  echo ".env file does not exist. Run command:"
+  echo "cat env.example > .env"
+  exit 1
+fi
+
+source .env
+
+REGISTER_PAYLOAD="{\"name\":\"$GITHUB_ACCOUNT_LOGIN\",\"password\":\"$AUTH_PASSWORD\"}"
+LOGIN_PAYLOAD="{\"username\":\"$GITHUB_ACCOUNT_LOGIN\",\"password\":\"$AUTH_PASSWORD\"}"
+
+curl -s --header "Content-Type: application/json" \
   --request POST \
-  --data '{"name":"ALEXANDERSUS","password":"TEST_PASSWORD"}' \
-  http://localhost:4000/api/auth/register
+  --data "$REGISTER_PAYLOAD"  "http://localhost:$APP_PORT/api/auth/register" | jq '.'
+
+
+curl -s --header "Content-Type: application/json" \
+  --request POST \
+  --data "$LOGIN_PAYLOAD" "http://localhost:$APP_PORT/api/auth/login" | jq '.'

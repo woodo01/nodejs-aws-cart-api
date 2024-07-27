@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/services/users.service';
 import { User } from '../users/models';
@@ -14,6 +14,17 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
+
+  register(payload: User) {
+    const user = this.usersService.findOne(payload.name);
+
+    if (user) {
+      throw new BadRequestException('User with such name already exists');
+    }
+
+    const { id: userId } = this.usersService.createOne(payload);
+    return { userId };
+  }
 
   validateUser(name: string, password: string): User {
     const user = this.usersService.findOne(name);

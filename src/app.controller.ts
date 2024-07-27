@@ -32,9 +32,8 @@ export class AppController {
   @Post('api/auth/register')
   @HttpCode(HttpStatus.CREATED)
   // TODO ADD validation
-  register(@Body() { name, password }: User) {
-    const user = this.authService.validateUser(name, password);
-    return this.authService.login(user, 'basic');
+  register(@Body() body: User) {
+    return this.authService.register(body);
   }
 
   @UseGuards(LocalAuthGuard)
@@ -42,24 +41,14 @@ export class AppController {
   async login(@Request() req: AppRequest) {
     const token = this.authService.login(req.user, 'basic');
 
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'OK',
-      data: {
-        ...token,
-      },
-    };
+    return token;
   }
 
   @UseGuards(BasicAuthGuard)
   @Get('api/profile')
-  async getProfile(@Request() req) {
+  async getProfile(@Request() req: AppRequest) {
     return {
-      statusCode: HttpStatus.OK,
-      message: 'OK',
-      data: {
-        user: req.user,
-      },
+      user: req.user,
     };
   }
 }

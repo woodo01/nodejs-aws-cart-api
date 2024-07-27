@@ -34,6 +34,8 @@
 $ npm install
 ```
 
+Put content of env.example to .env
+
 ## Running the app
 
 ```bash
@@ -45,6 +47,11 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+```
+
+To create user and get basic auth token via cli run
+```bash
+./get-token.sh
 ```
 
 ## Test
