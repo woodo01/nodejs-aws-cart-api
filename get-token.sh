@@ -3,6 +3,7 @@
 if [ ! -f .env ]; then
   echo ".env file does not exist. Run command:"
   echo "cat env.example > .env"
+  echo "Then update credentials in created .env file"
   exit 1
 fi
 
