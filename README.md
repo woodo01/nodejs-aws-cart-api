@@ -65,7 +65,7 @@ Response
 
 ```
 
-**Or you can to it with bash script, make sure you have installed `curl` in your system**
+**Or you can do it with bash script, make sure you have installed `curl` in your system**
 
 Put content of env.example to .env and update credentials:
 ```bash
