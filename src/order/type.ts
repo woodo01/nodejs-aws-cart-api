@@ -29,14 +29,6 @@ export type CreateOrderDto = {
   };
 };
 
-// THIS IS REAL RESPNOSE
-export type OrderResponse = {
-  id: string;
-  address: Address;
-  items: Array<{ productId: string; count: number }>;
-  statusHistory: StatusHistory;
-};
-
 export type PutCartPayload = {
   product: { description: string; id: string; title: string; price: number };
   count: number;

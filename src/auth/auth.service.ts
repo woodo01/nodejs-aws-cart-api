@@ -60,7 +60,7 @@ export class AuthService {
     // const payload = { username: user.name, sub: user.id };
     console.log(user);
 
-    function encodeUserToken(user) {
+    function encodeUserToken(user: User) {
       const { /*id,*/ name, password } = user;
       const buf = Buffer.from([name, password].join(':'), 'utf8');
 
