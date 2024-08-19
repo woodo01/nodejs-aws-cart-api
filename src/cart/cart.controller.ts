@@ -95,6 +95,4 @@ export class CartController {
   getOrder(): Order[] {
     return this.orderService.getAll();
   }
-
-  // TODO implement GET ORDER BY ID, DELETE ORDER, MANAGE ORDER
 }

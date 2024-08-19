@@ -35,7 +35,7 @@ export class OrderService {
   }
 
   // TODO add  type
-  update(orderId: string, data) {
+  update(orderId: string, data: Order) {
     const order = this.findById(orderId);
 
     if (!order) {
