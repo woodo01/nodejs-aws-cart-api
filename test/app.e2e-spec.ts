@@ -44,7 +44,7 @@ describe('AppController (e2e)', () => {
   it('/api/auth/login POST should return statusCode 404 if user does not exists', () => {
     return request(app.getHttpServer()).post('/api/auth/login')
     .send(fakeUser)
-    .expect(404);
+    .expect(401);
   });
 
 
@@ -66,8 +66,27 @@ describe('AppController (e2e)', () => {
     });
 
 
-  it('/api/auth/profile GET', () => {
-    return request(app.getHttpServer()).get('/api/auth/profile')
+  it('/api/profile GET should return 401 if user does not exists', () => {
+    return request(app.getHttpServer()).get('/api/profile')
+    .expect(401);
+  });
+
+
+  it('/api/profile GET should return 200 if valid auth header was provided', async () => {
+    const server = app.getHttpServer();
+
+    await request(server).post('/api/auth/register')
+    .send(fakeUser);
+
+    const response = await request(server).post('/api/auth/login').send({
+      username: fakeUser.name,
+      password: fakeUser.password
+    });
+
+    const { token_type, access_token } = response.body;
+
+    return request(app.getHttpServer()).get('/api/profile')
+    .set('Authorization', `${token_type} ${access_token}`)
     .expect(200);
   });
 });
