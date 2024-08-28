@@ -16,7 +16,7 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('healthCheck should be trythy', () => {
+    it('healthCheck should be truthy', () => {
       expect(appController.healthCheck()).toBeTruthy();
     });
   });

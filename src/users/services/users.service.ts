@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { User } from '../models';
 
 @Injectable()

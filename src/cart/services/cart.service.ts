@@ -1,16 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { Cart, CartStatuses } from '../models';
 import { PutCartPayload } from 'src/order/type';
-
-function getDate(date = new Date()) {
-  date.setHours(0);
-  date.setMinutes(0);
-  date.setMinutes(0);
-  date.setMilliseconds(0);
-
-  return (date.getTime() / 1000).toString();
-}
 
 @Injectable()
 export class CartService {
@@ -21,11 +12,13 @@ export class CartService {
   }
 
   createByUserId(user_id: string): Cart {
+    const timestamp = Date.now();
+
     const userCart = {
       id: randomUUID(),
       user_id,
-      created_at: getDate(),
-      updated_at: getDate(),
+      created_at: timestamp,
+      updated_at: timestamp,
       status: CartStatuses.OPEN,
       items: [],
     };
