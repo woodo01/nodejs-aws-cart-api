@@ -1,20 +1,14 @@
-import { CartItem } from '../../cart/models';
+import { Address, OrderStatus } from '../type';
 
 export type Order = {
-  id?: string,
+  id?: string;
   userId: string;
+  items: Array<{ productId: string; count: number }>;
   cartId: string;
-  items: CartItem[]
-  payment: {
-    type: string,
-    address?: any,
-    creditCard?: any,
-  },
-  delivery: {
-    type: string,
-    address: any,
-  },
-  comments: string,
-  status: string;
-  total: number;
-}
+  address: Address;
+  statusHistory: Array<{
+    status: OrderStatus.Open;
+    timestamp: number;
+    comment: string;
+  }>;
+};

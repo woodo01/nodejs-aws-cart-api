@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-
-import { v4 } from 'uuid';
-
+import { randomUUID } from 'node:crypto';
 import { User } from '../models';
 
 @Injectable()
@@ -9,20 +7,24 @@ export class UsersService {
   private readonly users: Record<string, User>;
 
   constructor() {
-    this.users = {}
+    this.users = {};
   }
 
-  findOne(userId: string): User {
-    return this.users[ userId ];
+  findOne(name: string): User {
+    for (const id in this.users) {
+      if (this.users[id].name === name) {
+        return this.users[id];
+      }
+    }
+    return;
   }
 
   createOne({ name, password }: User): User {
-    const id = v4();
-    const newUser = { id: name || id, name, password };
+    const id = randomUUID();
+    const newUser = { id, name, password };
 
-    this.users[ id ] = newUser;
+    this.users[id] = newUser;
 
     return newUser;
   }
-
 }
