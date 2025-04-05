@@ -4,7 +4,7 @@ export type Order = {
   id?: string;
   userId: string;
   items: Array<{ productId: string; count: number }>;
-  cartId: string;
+  cart_id: string;
   address: Address;
   statusHistory: Array<{
     status: OrderStatus.Open;

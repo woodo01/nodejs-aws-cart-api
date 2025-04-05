@@ -1,50 +1,60 @@
-import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
-import { Order } from '../models';
-import { CreateOrderPayload, OrderStatus } from '../type';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Order } from '../../entities/order.entity';
+import { CreateOrderPayload } from '../type';
 
 @Injectable()
 export class OrderService {
-  private orders: Record<string, Order> = {};
+  constructor(
+    @InjectRepository(Order)
+    private orderRepository: Repository<Order>,
+  ) {}
 
-  getAll() {
-    return Object.values(this.orders);
+  async getAll(): Promise<Order[]> {
+    return await this.orderRepository.find();
   }
 
-  findById(orderId: string): Order {
-    return this.orders[orderId];
-  }
-
-  create(data: CreateOrderPayload) {
-    const id = randomUUID() as string;
-    const order: Order = {
-      id,
-      ...data,
-      statusHistory: [
-        {
-          comment: '',
-          status: OrderStatus.Open,
-          timestamp: Date.now(),
-        },
-      ],
-    };
-
-    this.orders[id] = order;
+  async findById(orderId: string): Promise<Order> {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+      relations: ['items', 'items.product'],
+    });
 
     return order;
   }
 
+  async create(data: CreateOrderPayload): Promise<Order> {
+    try {
+      const order = this.orderRepository.create({
+        userId: data.userId,
+        ...data,
+      });
+      const savedOrder = await this.orderRepository.save(order);
+
+      return savedOrder;
+    } catch (error) {
+      throw new BadRequestException('Failed to create order: ' + error.message);
+    }
+  }
+
   // TODO add  type
-  update(orderId: string, data: Order) {
-    const order = this.findById(orderId);
+  async update(orderId: string, data: Partial<Order>): Promise<Order> {
+    const order = await this.findById(orderId);
 
     if (!order) {
-      throw new Error('Order does not exist.');
+      throw new NotFoundException('Order does not exist.');
     }
 
-    this.orders[orderId] = {
+    Object.assign(order, {
       ...data,
       id: orderId,
-    };
+    });
+
+    return await this.orderRepository.save(order);
   }
 }
