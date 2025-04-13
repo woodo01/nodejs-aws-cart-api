@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TYPE IF EXISTS order_status CASCADE;
 DROP TYPE IF EXISTS cart_status CASCADE;
 
-CREATE TYPE order_status AS ENUM ('CREATED', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED');
+CREATE TYPE order_status AS ENUM ('OPEN', 'CREATED', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 CREATE TYPE cart_status AS ENUM ('OPEN', 'ORDERED');
 
 CREATE TABLE users (
@@ -39,6 +39,7 @@ CREATE TABLE orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
     cart_id UUID NOT NULL,
+    items JSONB NOT NULL,
     payment JSONB NOT NULL,
     delivery JSONB NOT NULL,
     comments TEXT,
@@ -118,6 +119,7 @@ INSERT INTO orders (
     id,
     user_id,
     cart_id,
+    items,
     payment,
     delivery,
     comments,
@@ -130,6 +132,7 @@ INSERT INTO orders (
     'e892f85a-08b9-4eda-b6d2-ab0c248f2e40',
     '7e63f6a0-b2d1-4f42-a8a5-e9ecb7ec4f9c',
     'c27e6a5d-942b-4c40-a757-f0d7f7e2e71e',
+    '[{"productId":"d42acebf-5339-495f-b80d-27864af0c57f","count":1},{"productId":"e74784c7-5ccd-4403-a387-a59ea3cc53f1","count":3},{"productId":"050fde3d-422f-48e3-a8ae-e23d08a8a6db","count":1}]'::jsonb,
     '{"method": "credit_card", "card_last4": "5678", "amount": 129.99, "transaction_id": "txn_3J5X7qLkdIwDVf1A0"}'::jsonb,
     '{"address": "42 Maple Avenue", "city": "Chicago", "state": "IL", "zip": "60601", "country": "USA"}'::jsonb,
     'Please leave package at the front door, no signature required',
@@ -142,6 +145,7 @@ INSERT INTO orders (
     '7d9f0dc5-b32a-4f6e-b3f7-c06c920edcc1',
     '9d38e7f4-19cf-4d34-8d95-62b6407240f2',
     '4a99c57e-b0d5-4c9c-9e6b-24d67f692a33',
+    '[{"productId":"d42acebf-5339-495f-b80d-27864af0c57f","count":1},{"productId":"e74784c7-5ccd-4403-a387-a59ea3cc53f1","count":3},{"productId":"050fde3d-422f-48e3-a8ae-e23d08a8a6db","count":1}]'::jsonb,
     '{"method": "paypal", "email": "sarah.wilson@outlook.com", "amount": 245.50, "transaction_id": "PAY-9HG237450X071441GLQUY6ZI"}'::jsonb,
     '{"address": "183 Ocean Drive", "city": "Miami", "state": "FL", "zip": "33139", "country": "USA"}'::jsonb,
     'This is a gift, please include gift receipt and gift wrap',
