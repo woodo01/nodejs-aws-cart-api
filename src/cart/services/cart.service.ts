@@ -24,7 +24,10 @@ export class CartService {
 
   async findByUserId(user_id: string): Promise<Cart> {
     return this.cartRepository.findOne({
-      where: { user_id },
+      where: {
+        user_id,
+        status: CartStatuses.OPEN,
+      },
       relations: ['items'],
     });
   }
