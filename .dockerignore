@@ -1,0 +1,46 @@
+# macos files
+.DS_Store
+Thumbs.db
+
+# IDE config
+.vscode/
+.idea/
+
+# git configs
+.git/
+.gitignore
+
+# files of environment should be excluded
+.env
+*.env
+
+# app docs
+README.md
+env.example
+
+# logs are not needed for image
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# docker source files
+docker-compose*
+Dockerfile*
+
+# app configs for dev env
+.editorconfig
+.prettier*
+
+# test env files that only for dev env
+test/
+coverage/
+*.test.js
+*.spec.js
+*.spec.ts
+jest.config.*
+
+# app downloaded packages
+node_modules/
+
+# build folder
+dist/
