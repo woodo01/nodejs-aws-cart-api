@@ -5,9 +5,12 @@ WORKDIR /app
 COPY package*.json ./
 # Install all dependencies
 RUN npm ci && npm cache clean --force
+COPY tsconfig*.json ./
+COPY src/ ./src/
+RUN npm run build
 
 # Build stage
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY tsconfig*.json ./
 COPY src/ ./src/
@@ -19,7 +22,7 @@ RUN npm run build
 RUN npm prune --omit=dev
 
 # Production stage
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 WORKDIR /app
 ENV NODE_ENV=production
 # Only package.json for prod
